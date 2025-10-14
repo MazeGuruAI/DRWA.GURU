@@ -1,0 +1,16 @@
+# Ethereum MCP Server Requirements
+
+# Core MCP dependencies
+mcp>=1.13.1
+fastmcp>=0.1.0
+
+# Web3 and Ethereum dependencies
+web3>=6.0.0
+eth-utils>=2.3.0
+eth-account>=0.8.0
+
+# HTTP client
+requests>=2.31.0
+
+# For better async support (optional)
+aiohttp>=3.8.0

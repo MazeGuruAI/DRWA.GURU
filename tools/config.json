@@ -1,0 +1,52 @@
+{
+  "mcp_server": {
+    "name": "ethereum-mcp-server",
+    "version": "1.0.0",
+    "description": "以太坊链上数据查询MCP服务器",
+    "command": "python tools/start_ethereum_mcp.py"
+  },
+  "networks": {
+    "mainnet": {
+      "name": "Ethereum Mainnet",
+      "chain_id": 1,
+      "description": "以太坊主网，真实资产和交易",
+      "recommended_for": ["生产环境", "实际价值查询"]
+    },
+    "sepolia": {
+      "name": "Sepolia Testnet",
+      "chain_id": 11155111,
+      "description": "Sepolia测试网，用于开发和测试",
+      "recommended_for": ["开发测试", "功能验证"]
+    },
+    "goerli": {
+      "name": "Goerli Testnet", 
+      "chain_id": 5,
+      "description": "Goerli测试网，即将弃用",
+      "recommended_for": ["兼容性测试"]
+    }
+  },
+  "demo_data": {
+    "addresses": {
+      "vitalik": {
+        "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+        "description": "Vitalik Buterin的以太坊地址"
+      },
+      "uniswap_v3": {
+        "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+        "description": "Uniswap V3智能合约地址"
+      }
+    },
+    "transactions": [
+      {
+        "hash": "0x88df016429689c079f3b2f6ad39fa052532c56795b733da78a91ebe6a713944b",
+        "description": "示例以太坊交易"
+      }
+    ]
+  },
+  "agent_config": {
+    "default_network": "mainnet",
+    "timeout_seconds": 30,
+    "enable_debug": false,
+    "markdown_output": true
+  }
+}

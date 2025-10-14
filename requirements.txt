@@ -1,0 +1,6 @@
+agno
+openai
+streamlit
+nest_asyncio
+googlesearch-python
+baidusearch-python
