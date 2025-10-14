@@ -1,0 +1,12 @@
+# 环境变量文件
+.env
+*.env
+.env.*
+.env.local
+.env.production
+.env.development
+.env.test
+
+# 环境变量目录
+env/
+.envs/
