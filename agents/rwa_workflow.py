@@ -14,7 +14,7 @@ from agno.memory.v2.memory import Memory
 from agno.storage.sqlite import SqliteStorage
 from agno.tools.reasoning import ReasoningTools
 
-# 添加项目根目录到Python路径
+# Add project root directory to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,134 +25,134 @@ web3_mcp_tool = MCPTools(
     timeout_seconds=6000,
 )
 
-# 动态导入代理和配置
+# Dynamically import agents and configuration
 try:
     from config import get_ai_model
     from agents.asset_verification_agent import get_asset_verification_agent
     from agents.asset_valuation_agent import get_asset_valuation_agent
     from agents.onchain_notarization_agent import get_onchain_notarization_agent
 except ImportError as e:
-    print(f"❌ 导入错误: {e}")
-    print("请确保在项目根目录运行此脚本")
+    print(f"❌ Import error: {e}")
+    print("Please ensure you run this script from the project root directory")
     sys.exit(1)
 
 
-# 初始化共享的内存和存储
+# Initialize shared memory and storage
 memory_db = SqliteMemoryDb(table_name="rwa_workflow_memory", db_file="storage/rwa_workflow.db")
 memory = Memory(db=memory_db)
 storage = SqliteStorage(table_name="rwa_workflow_sessions", db_file="storage/rwa_workflow.db")
 
-# 初始化各个代理
+# Initialize each agent
 asset_verification_agent = get_asset_verification_agent()
 asset_valuation_agent = get_asset_valuation_agent()
 onchain_notarization_agent = get_onchain_notarization_agent(web3_mcp_tool)
 
-# ===== 路由函数：识别用户意图 =====
+# ===== Router function: Identify user intent =====
 
 def intent_router(step_input: StepInput) -> List[Step]:
-    """根据用户意图路由到不同的处理步骤"""
+    """Route to different processing steps based on user intent"""
     user_input = (step_input.message or "").lower()
     
-    # 检查是否有文件上传（多种检测方式）
-    has_files_in_message = "[已上传文件:" in (step_input.message or "")
+    # Check if files are uploaded (multiple detection methods)
+    has_files_in_message = "[Uploaded Files:" in (step_input.message or "")
     has_files_in_additional = False
     if step_input.additional_data:
         has_files_in_additional = step_input.additional_data.get("has_files", False)
     
-    # 也检查是否传递了images参数
+    # Also check if images parameter is passed
     has_images = hasattr(step_input, 'images') and step_input.images
     
-    # 只要一种方式检测到文件就认为有文件
+    # Consider files present if detected by any method
     has_any_files = has_files_in_message or has_files_in_additional or has_images
     
-    # 检查会话状态（从 additional_data 或消息中检测）
+    # Check session state (detect from additional_data or message)
     session_state = step_input.additional_data.get("session_state", {}) if step_input.additional_data else {}
     verification_done = session_state.get("verification_done", False)
     valuation_done = session_state.get("valuation_done", False)
     
-    # 意图1：资产验证
-    if any(keyword in user_input for keyword in ["验证", "上传", "房产证", "证明"]):
+    # Intent 1: Asset verification
+    if any(keyword in user_input for keyword in ["verify", "verification", "upload", "certificate", "proof", "验证", "上传", "房产证", "证明"]):
         if not has_any_files:
             return [Step(
-                name="提醒上传文件",
+                name="Remind to upload files",
                 executor=lambda si: StepOutput(
-                    content="请先在左侧边栏上传您的资产文件（如房产证、土地证等），然后再说'验证资产'。",
+                    content="Please first upload your asset files (such as property certificates, land certificates, etc.) in the left sidebar, then say 'verify assets'.",
                     success=False
                 )
             )]
         else:
             return [Step(
-                name="资产验证",
+                name="Asset Verification",
                 agent=asset_verification_agent,
-                description="验证资产文件并生成报告"
+                description="Verify asset files and generate report"
             )]
     
-    # 意图2：资产估值
-    elif any(keyword in user_input for keyword in ["估值", "评估", "价值", "多少钱"]):
+    # Intent 2: Asset valuation
+    elif any(keyword in user_input for keyword in ["valuation", "evaluate", "value", "worth", "price", "估值", "评估", "价值", "多少钱"]):
         if not verification_done:
             return [Step(
-                name="提醒先验证",
+                name="Remind to verify first",
                 executor=lambda si: StepOutput(
-                    content="请先完成资产验证后再进行估值。",
+                    content="Please complete asset verification first before proceeding with valuation.",
                     success=False
                 )
             )]
         else:
             return [Step(
-                name="资产估值",
+                name="Asset Valuation",
                 agent=asset_valuation_agent,
-                description="对资产进行市场估值"
+                description="Conduct market valuation of the asset"
             )]
     
-    # 意图3：资产token化
-    elif any(keyword in user_input for keyword in ["token", "代币", "上链", "部署"]):
+    # Intent 3: Asset tokenization
+    elif any(keyword in user_input for keyword in ["token", "tokenize", "tokenization", "deploy", "blockchain", "on-chain", "代币", "上链", "部署"]):
         if not valuation_done:
             return [Step(
-                name="提醒先估值",
+                name="Remind to valuate first",
                 executor=lambda si: StepOutput(
-                    content="请先完成资产估值后再进行token化。",
+                    content="Please complete asset valuation first before proceeding with tokenization.",
                     success=False
                 )
             )]
         else:
             return [Step(
-                name="链上公证",
+                name="On-chain Notarization",
                 agent=onchain_notarization_agent,
-                description="在Sepolia测试网部署ERC20代币"
+                description="Deploy ERC20 token on Sepolia testnet"
             )]
     
-    # 默认：引导用户
+    # Default: Guide user
     else:
         return [Step(
-            name="用户引导",
+            name="User Guidance",
             executor=lambda si: StepOutput(
-                content="""欢迎使用RWA资产token化服务！
+                content="""Welcome to RWA Asset Tokenization Service!
                 
-请选择您需要的服务：
-1. 资产验证 - 上传资产文件进行验证
-2. 资产估值 - 提供资产信息进行市场评估
-3. 资产token化 - 将资产上链并生成代币
+Please select the service you need:
+1. Asset Verification - Upload asset files for verification
+2. Asset Valuation - Provide asset information for market evaluation
+3. Asset Tokenization - Tokenize assets on-chain and generate tokens
 
-请告诉我您想要进行哪一步操作。""",
+Please tell me which step you would like to proceed with.""",
                 success=True
             )
         )]
 
-# ===== 创建RWA工作流 =====
+# ===== Create RWA Workflow =====
 
 rwa_workflow = Workflow(
     name="RWA Asset Tokenization Workflow",
-    description="实现资产验证、估值和链上token化的完整流程",
+    description="Implement complete process of asset verification, valuation and on-chain tokenization",
     steps=[
         Router(
-            name="意图识别路由",
+            name="Intent Recognition Router",
             selector=intent_router,
             choices=[
-                Step(name="资产验证", agent=asset_verification_agent),
-                Step(name="资产估值", agent=asset_valuation_agent),
-                Step(name="链上公证", agent=onchain_notarization_agent),
+                Step(name="Asset Verification", agent=asset_verification_agent),
+                Step(name="Asset Valuation", agent=asset_valuation_agent),
+                Step(name="On-chain Notarization", agent=onchain_notarization_agent),
             ],
-            description="根据用户意图路由到相应的处理流程"
+            description="Route to corresponding processing flow based on user intent"
         )
     ],
     
@@ -160,20 +160,20 @@ rwa_workflow = Workflow(
 )
 
 def run_rwa_workflow(message: str, **kwargs):
-    """运行RWA工作流的便捷函数（同步方式）"""
+    """Convenience function to run RWA workflow (synchronous)"""
     return rwa_workflow.run(message=message, **kwargs)
 
 
 async def arun_rwa_workflow(message: str, **kwargs):
-    """运行RWA工作流的便捷函数（异步方式）"""
+    """Convenience function to run RWA workflow (asynchronous)"""
     return await rwa_workflow.arun(message=message, **kwargs)
 
 
 def print_rwa_workflow(message: str, **kwargs):
-    """打印RWA工作流响应的便捷函数（同步方式）"""
+    """Convenience function to print RWA workflow response (synchronous)"""
     return rwa_workflow.print_response(message=message, **kwargs)
 
 
 async def aprint_rwa_workflow(message: str, **kwargs):
-    """打印RWA工作流响应的便捷函数（异步方式）"""
+    """Convenience function to print RWA workflow response (asynchronous)"""
     return await rwa_workflow.aprint_response(message=message, **kwargs)

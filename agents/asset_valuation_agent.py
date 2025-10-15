@@ -15,7 +15,7 @@ from config import get_ai_model
 def get_asset_valuation_agent() -> Agent:
     """Create and return the asset valuation agent."""
     
-    # 初始化共享的内存和存储（与RWA团队保持一致）
+    # Initialize shared memory and storage (consistent with RWA team)
     memory_db = SqliteMemoryDb(table_name="rwa_memory", db_file="storage/rwa_memory.db")
     memory = Memory(db=memory_db)
     storage = SqliteStorage(table_name="rwa_sessions", db_file="storage/rwa_storage.db")
@@ -66,9 +66,9 @@ def get_asset_valuation_agent() -> Agent:
             - Apply ReasoningTools to analyze and cross-validate results
             - Be thorough but concise in your analysis
             - Clearly distinguish between facts and estimates
+            - All output content is in English
             - If you're unsure about something, state your uncertainty rather than making assumptions
             - Focus on the specific asset parameters provided by the user
-            - 使用中文输出
         """),
         markdown=True,
         show_tool_calls=True,

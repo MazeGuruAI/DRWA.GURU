@@ -52,7 +52,7 @@ def process_uploaded_files(uploaded_files) -> List[Dict[str, Any]]:
     
     for uploaded_file in uploaded_files:
         file_content = get_file_content_base64(uploaded_file)
-        file_bytes = uploaded_file.getvalue()  # 获取文件的字节内容
+        file_bytes = uploaded_file.getvalue()  # Get file byte content
         
         file_info = {
             "name": uploaded_file.name,
@@ -60,7 +60,7 @@ def process_uploaded_files(uploaded_files) -> List[Dict[str, Any]]:
             "size": uploaded_file.size,
             "size_mb": uploaded_file.size / (1024 * 1024),
             "content": file_content,
-            "bytes": file_bytes  # 添加字节内容
+            "bytes": file_bytes  # Add byte content
         }
         files_data.append(file_info)
     
@@ -68,44 +68,44 @@ def process_uploaded_files(uploaded_files) -> List[Dict[str, Any]]:
 
 
 def create_agno_images_from_files(files_data: List[Dict[str, Any]]) -> List[Image]:
-    """从文件数据创建agno Image对象列表"""
+    """Create agno Image object list from file data"""
     images = []
     
     for file_info in files_data:
-        # 只处理图片文件
+        # Process only image files
         if file_info['type'] and file_info['type'].startswith('image/'):
             try:
-                # 创建临时文件
+                # Create temporary file
                 with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_info['name'].split('.')[-1]}") as temp_file:
                     temp_file.write(file_info['bytes'])
                     temp_path = temp_file.name
                 
-                # 创建agno Image对象
+                # Create agno Image object
                 agno_image = Image(filepath=temp_path)
                 images.append(agno_image)
                 
-                # 清理临时文件（可选，系统会自动清理）
+                # Clean up temporary file (optional, system will auto clean)
                 # os.unlink(temp_path)
                 
             except Exception as e:
-                st.warning(f"处理图片文件 {file_info['name']} 时出错: {str(e)}")
+                st.warning(f"Error processing image file {file_info['name']}: {str(e)}")
     
     return images
 
 
 def create_agno_images_from_bytes(files_data: List[Dict[str, Any]]) -> List[Image]:
-    """从文件字节数据直接创建agno Image对象列表"""
+    """Create agno Image object list directly from file byte data"""
     images = []
     
     for file_info in files_data:
-        # 只处理图片文件
+        # Process only image files
         if file_info['type'] and file_info['type'].startswith('image/'):
             try:
-                # 直接使用字节内容创建Image对象
+                # Create Image object directly using byte content
                 agno_image = Image(content=file_info['bytes'])
                 images.append(agno_image)
             except Exception as e:
-                st.warning(f"处理图片文件 {file_info['name']} 时出错: {str(e)}")
+                st.warning(f"Error processing image file {file_info['name']}: {str(e)}")
     
     return images
 
@@ -115,14 +115,14 @@ def format_file_info_for_agent(files_data: List[Dict[str, Any]]) -> str:
     if not files_data:
         return ""
     
-    file_info_text = "\n\n=== 用户上传的文件信息 ===\n"
+    file_info_text = "\n\n=== User Uploaded File Information ===\n"
     for file_info in files_data:
-        file_info_text += f"- 文件名: {file_info['name']}\n"
-        file_info_text += f"- 文件类型: {file_info['type']}\n"
-        file_info_text += f"- 文件大小: {file_info['size_mb']:.2f}MB\n"
+        file_info_text += f"- File Name: {file_info['name']}\n"
+        file_info_text += f"- File Type: {file_info['type']}\n"
+        file_info_text += f"- File Size: {file_info['size_mb']:.2f}MB\n"
         file_info_text += "\n"
     
-    file_info_text += "请对这些文件进行验证和分析。\n"
-    file_info_text += "=== 文件信息结束 ===\n\n"
+    file_info_text += "Please verify and analyze these files.\n"
+    file_info_text += "=== End of File Information ===\n\n"
     
     return file_info_text

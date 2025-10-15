@@ -16,7 +16,7 @@ import os
 def get_asset_verification_agent() -> Agent:
     """Create and return the asset verification agent."""
     
-    # 初始化共享的内存和存储（与RWA团队保持一致）
+    # Initialize shared memory and storage (consistent with RWA team)
     memory_db = SqliteMemoryDb(table_name="rwa_memory", db_file="storage/rwa_memory.db")
     memory = Memory(db=memory_db)
     storage = SqliteStorage(table_name="rwa_sessions", db_file="storage/rwa_storage.db")
@@ -26,7 +26,7 @@ def get_asset_verification_agent() -> Agent:
         model=get_ai_model(model_type="azure"),
         tools=[BaiduSearchTools()],
         description="You are an expert asset verification agent that validates asset documents and images for authenticity and compliance.",
-        # 内存和存储配置
+        # Memory and storage configuration
         memory=memory,
         storage=storage,
         instructions=dedent("""
@@ -63,11 +63,12 @@ def get_asset_verification_agent() -> Agent:
             - Clearly distinguish between facts and opinions
             - If you're unsure about something, state your uncertainty rather than making assumptions
             - Focus on the specific asset documents provided
+            - All output content is in English
             - Retrieve user asset information and incorporate key information into the model context
         """),
         markdown=True,
         show_tool_calls=True,
-        # 历史与会话
+        # History and session
         add_state_in_messages=True,
         add_history_to_messages=True,
         num_history_runs=3,
