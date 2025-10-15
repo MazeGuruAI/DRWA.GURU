@@ -29,30 +29,6 @@ def main():
         st.image("https://material-maze.obs.cn-east-3.myhuaweicloud.com/drwaguru/drwa_icon.png")
         st.title("RWA Asset Tokenization Platform")
     
-    with col2:
-        st.markdown("""
-            <a href="https://github.com/MazeGuruAI/DRWA.GURU" target="_blank" style="text-decoration: none;">
-                <div style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 8px 16px;
-                    background-color: #24292e;
-                    color: white;
-                    border-radius: 6px;
-                    font-size: 14px;
-                    font-weight: 600;
-                    margin-top: 10px;
-                    transition: background-color 0.2s;
-                    ">
-                    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                    </svg>
-                    GitHub
-                </div>
-            </a>
-        """, unsafe_allow_html=True)
-    
     st.markdown("Professional RWA Asset Verification, Valuation and Tokenization Service Platform")
     
     # Sidebar
@@ -95,20 +71,15 @@ def main():
                 st.markdown(f"📄 {file_info['name']} ({file_info['size_mb']:.2f}MB)")
         
         st.markdown("---")
-        st.markdown("### 💡 About RWA Workflow")
+        # Add clickable GitHub image at the bottom of sidebar
         st.markdown("""
-        **Workflow Steps:**
-        - 🔍 **Asset Verification**: Verify the authenticity and legality of asset files
-        - 💰 **Asset Valuation**: Conduct professional asset market evaluation
-        - ⛓️ **Token Deployment**: Deploy ERC20 tokens on Ethereum Sepolia testnet
-        
-        **Process Features:**
-        1. Smart Conditional Logic: Determine subsequent steps based on verification results
-        2. Asynchronous Execution: Efficiently handle multiple agent calls
-        3. Complete Report: Generate detailed tokenization report
-        4. Error Handling: Automatically abort and provide reasons upon failure
-        """)
-    
+            <a href="https://github.com/MazeGuruAI/DRWA.GURU" target="_blank" style="display: block; text-align: center;">
+                <img src="https://material-maze.obs.cn-east-3.myhuaweicloud.com/drwaguru/GitHub.png" 
+                     alt="Visit our GitHub" 
+                     style="cursor: pointer; max-width: 100%; height: auto;">
+            </a>
+        """, unsafe_allow_html=True)
+
     # Initialize RWA workflow session
     # The workflow maintains its own state and memory across interactions
     
