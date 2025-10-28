@@ -6,6 +6,7 @@ from config import get_ai_model
 from agents.asset_verification_agent import get_asset_verification_agent
 from agents.asset_valuation_agent import get_asset_valuation_agent
 from agents.onchain_notarization_agent import get_onchain_notarization_agent
+from agents.rwa_compliance_agent import get_rwa_compliance_agent
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
 from agno.storage.sqlite import SqliteStorage
@@ -19,10 +20,11 @@ sessions = SqliteStorage(table_name="rwa_team_sessions", db_file="storage/rwa_se
 asset_valuation_agent = get_asset_valuation_agent()
 asset_verification_agent = get_asset_verification_agent()
 onchain_notarization_agent = get_onchain_notarization_agent()
+compliance_agent = get_rwa_compliance_agent()
 
 rwa_team = Team(
     name="RWA Team",
-    members=[asset_valuation_agent, asset_verification_agent, onchain_notarization_agent],
+    members=[asset_valuation_agent, asset_verification_agent, onchain_notarization_agent, compliance_agent],
     model=get_ai_model(model_type="azure"),
     mode="route",
     tools=[ReasoningTools()],
@@ -44,6 +46,7 @@ rwa_team = Team(
     - **asset_verification_agent**: Verify user-uploaded asset files (property certificates, land certificates, etc.), verify their authenticity, validity and legality, generate verification reports and record key asset information
     - **asset_valuation_agent**: Based on asset verification information and detailed information provided by users (asset type, region, area, years of use, etc.), conduct professional valuation of assets through market data queries
     - **onchain_notarization_agent**: According to valuation results and user-specified token parameters (token name, symbol, supply, etc.), deploy ERC20 token contracts on Ethereum Sepolia testnet
+    - **compliance_agent**: Provide regulatory and compliance guidance for RWA tokenization across multiple jurisdictions, including securities laws, licensing requirements, KYC/AML obligations, and latest regulatory news
     
     ### Core Workflow - Smart Routing Based on User Intent:
     
@@ -52,6 +55,7 @@ rwa_team = Team(
       * Asset verification
       * Asset valuation
       * Asset tokenization (Token)
+      * Compliance and regulatory consultation
       * General consultation or unrelated questions
     
     **Scenario 1: User wants asset verification**
@@ -111,7 +115,21 @@ rwa_team = Team(
          * Provide possible solutions
          * Ask if you need to retry
     
-    **Scenario 4: Unrelated questions or general consultation**
+    **Scenario 4: User wants compliance and regulatory guidance**
+    1. Identify the specific jurisdiction(s) or regulatory topic
+    2. Call compliance_agent to provide regulatory guidance:
+       - Securities law requirements
+       - Licensing and registration obligations
+       - KYC/AML compliance requirements
+       - Cross-border regulatory considerations
+       - Latest regulatory news and updates
+    3. If user is planning tokenization:
+       - Integrate compliance guidance with verification/valuation results
+       - Ensure tokenization plan meets regulatory requirements
+       - Warn about potential compliance risks
+    4. Provide references to specific regulations and official sources
+    
+    **Scenario 5: Unrelated questions or general consultation**
     - Answer user questions directly using AI capabilities
     - Do not start workflow
     - Can introduce RWA service content and process
@@ -155,6 +173,7 @@ def main():
         print("- {}: Asset Verification Agent".format(asset_verification_agent.name))
         print("- {}: Asset Valuation Agent".format(asset_valuation_agent.name))
         print("- {}: Blockchain Notarization Agent".format(onchain_notarization_agent.name))
+        print("- {}: Compliance and Regulation Agent".format(compliance_agent.name))
         
         print("\n🚀 Starting RWA process test...")
         

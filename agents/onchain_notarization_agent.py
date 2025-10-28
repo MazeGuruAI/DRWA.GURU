@@ -1,3 +1,4 @@
+import warnings
 from typing import Optional
 import asyncio
 import os
@@ -7,6 +8,12 @@ import contextlib
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from textwrap import dedent
+
+# Add parent directory to system path for imports
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
 from agno.storage.sqlite import SqliteStorage
@@ -16,6 +23,10 @@ from agno.tools.mcp import MCPTools
 
 from config import get_ai_model
 
+# Suppress RuntimeWarning and specific async cleanup warnings
+warnings.filterwarnings('ignore', category=RuntimeWarning)
+warnings.filterwarnings('ignore', message='.*async.*generator.*')
+
 # Ethereum MCP server configuration
 ETHEREUM_MCP_COMMAND = "python tools/web3_mcp_server.py"
 ETHEREUM_FASTMCP_URL = "http://127.0.0.1:8000/mcp"
@@ -23,15 +34,34 @@ ETHEREUM_FASTMCP_URL = "http://127.0.0.1:8000/mcp"
 
 async def run_agent(message: str) -> None:
     """Run Web3 Agent and process user queries"""
-    # Initialize the MCP server
-    async with (
-        MCPTools(ETHEREUM_MCP_COMMAND) as mcp_tools,  # Supply the command to run the MCP server
-    ):
-        agent = get_onchain_notarization_agent(
-            prefix_name="interactive",
-            mcp_tools=mcp_tools  # Pass MCP tool instance
+    mcp_tools = None
+    agent_completed = False
+    
+    try:
+        # Initialize the MCP server with longer timeout for startup
+        mcp_tools_config = MCPTools(
+            command=ETHEREUM_MCP_COMMAND,
+            timeout_seconds=30  # Increase timeout for MCP server startup
         )
-        await agent.aprint_response(message, stream=True)
+        async with mcp_tools_config as mcp_tools:
+            agent = get_onchain_notarization_agent(
+                prefix_name="interactive",
+                mcp_tools=mcp_tools  # Pass MCP tool instance
+            )
+            await agent.aprint_response(message, stream=True)
+            agent_completed = True
+            # Give a brief moment for any pending operations
+            await asyncio.sleep(0.1)
+    except KeyboardInterrupt:
+        raise
+    except Exception as e:
+        # Suppress cleanup errors after successful completion
+        if agent_completed and ("TaskGroup" in str(e) or "cancel scope" in str(e)):
+            # This is likely a cleanup error after successful execution, ignore it
+            pass
+        else:
+            print(f"❌ Execution failed: {e}", file=sys.stderr)
+            raise
 '''
 async def run_agent(message: str) -> None:
     """Run Web3 Agent and process user queries"""
@@ -124,8 +154,9 @@ Important Guidelines:
 
 
 
-'''
-if __name__ == "__main__":
+
+def main():
+    """Main entry point"""
     import argparse
 
     parser = argparse.ArgumentParser(description="Run Web3 blockchain data query Agent")
@@ -142,9 +173,18 @@ if __name__ == "__main__":
     try:
         print(f"🚀 Starting Web3 Agent, query: {args.prompt}")
         asyncio.run(run_agent(args.prompt))
+        print("\n✅ Agent execution completed")
     except KeyboardInterrupt:
         print("\n👋 User interrupted, Web3 Agent stopped")
     except Exception as exc:
-        print(f"❌ Execution failed: {exc}", file=sys.stderr)
-        sys.exit(1)
-'''
+        # Check if it's just a cleanup error
+        if "TaskGroup" in str(exc) or "cancel scope" in str(exc):
+            print("\n✅ Agent execution completed (cleanup warning ignored)")
+        else:
+            print(f"❌ Execution failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+

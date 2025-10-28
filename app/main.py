@@ -29,7 +29,7 @@ def main():
         st.image("https://material-maze.obs.cn-east-3.myhuaweicloud.com/drwaguru/drwa_icon.png")
         st.title("RWA Asset Tokenization Platform")
     
-    st.markdown("Professional RWA Asset Verification, Valuation and Tokenization Service Platform")
+    st.markdown("Professional RWA Asset Verification, Valuation, Tokenization, Compliance and Investment Service Platform")
     
     # Sidebar
     with st.sidebar:
@@ -90,18 +90,32 @@ def main():
         welcome_message = """
         👋 Welcome to the RWA Asset Tokenization Platform!
         
-        I am a professional RWA workflow system that can help you:
-        - 🔍 Verify the authenticity and legality of asset files
-        - 💰 Conduct professional asset value evaluation
-        - ⛓️ Issue asset tokens on the blockchain
+I am a professional RWA workflow system that can help you:
+        - 🔍 **Asset Verification** - Verify the authenticity and legality of asset files
+        - 💰 **Asset Valuation** - Conduct professional asset value evaluation
+        - ⛓️ **Asset Tokenization** - Issue asset tokens on the blockchain
+        - ⚖️ **Compliance Consultation** - Get global RWA regulatory and compliance guidance
+        - 📈 **Investment Consultation** - Receive RWA investment analysis and portfolio recommendations
         
-        **Usage Steps:**
+        **How to Use:**
+        
+        **For Asset Tokenization:**
         1. Upload your asset proof documents (such as property certificates, land certificates, etc.)
         2. Provide detailed asset information (type, location, area, age, etc.)
         3. Set token parameters (name, symbol, supply, etc.)
         4. The system will automatically complete the entire tokenization process
         
-        Please first upload your asset proof documents, then tell me your tokenization requirements.
+        **For Compliance Consultation:**
+        - Ask about regulations in specific jurisdictions (e.g., "What are SEC requirements for tokenizing real estate?")
+        - Inquire about compliance procedures and licensing requirements
+        - Get updates on latest regulatory developments
+        
+        **For Investment Consultation:**
+        - Request RWA market analysis and asset comparisons
+        - Get personalized portfolio recommendations based on your risk tolerance
+        - Analyze historical returns and risk assessments
+        
+        Please tell me what service you need!
         """
         add_message("assistant", welcome_message)
     

@@ -9,6 +9,8 @@ from config import get_ai_model
 from agents.asset_verification_agent import get_asset_verification_agent
 from agents.asset_valuation_agent import get_asset_valuation_agent
 from agents.onchain_notarization_agent import get_onchain_notarization_agent
+from agents.rwa_compliance_agent import get_rwa_compliance_agent
+from agents.rwa_investment_agent import get_rwa_investment_agent
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
 from agno.storage.sqlite import SqliteStorage
@@ -31,6 +33,8 @@ try:
     from agents.asset_verification_agent import get_asset_verification_agent
     from agents.asset_valuation_agent import get_asset_valuation_agent
     from agents.onchain_notarization_agent import get_onchain_notarization_agent
+    from agents.rwa_compliance_agent import get_rwa_compliance_agent
+    from agents.rwa_investment_agent import get_rwa_investment_agent
 except ImportError as e:
     print(f"❌ Import error: {e}")
     print("Please ensure you run this script from the project root directory")
@@ -46,15 +50,19 @@ storage = SqliteStorage(table_name="rwa_workflow_sessions", db_file="storage/rwa
 asset_verification_agent = get_asset_verification_agent()
 asset_valuation_agent = get_asset_valuation_agent()
 onchain_notarization_agent = get_onchain_notarization_agent(web3_mcp_tool)
+compliance_agent = get_rwa_compliance_agent()
+investment_agent = get_rwa_investment_agent()
 
 # ===== Router function: Identify user intent =====
 
 def intent_router(step_input: StepInput) -> List[Step]:
     """Route to different processing steps based on user intent"""
-    user_input = (step_input.message or "").lower()
+    # Safely convert message to string
+    message_str = str(step_input.message) if step_input.message else ""
+    user_input = message_str.lower()
     
     # Check if files are uploaded (multiple detection methods)
-    has_files_in_message = "[Uploaded Files:" in (step_input.message or "")
+    has_files_in_message = "[Uploaded Files:" in message_str
     has_files_in_additional = False
     if step_input.additional_data:
         has_files_in_additional = step_input.additional_data.get("has_files", False)
@@ -121,6 +129,22 @@ def intent_router(step_input: StepInput) -> List[Step]:
                 description="Deploy ERC20 token on Sepolia testnet"
             )]
     
+    # Intent 4: Compliance consultation
+    elif any(keyword in user_input for keyword in ["compliance", "regulation", "legal", "license", "sec", "law", "regulatory", "合规", "监管", "法律", "法规", "许可", "牌照"]):
+        return [Step(
+            name="Compliance Consultation",
+            agent=compliance_agent,
+            description="Provide RWA compliance and regulatory guidance"
+        )]
+    
+    # Intent 5: Investment consultation
+    elif any(keyword in user_input for keyword in ["invest", "investment", "portfolio", "return", "yield", "risk", "market", "analysis", "投资", "收益", "风险", "市场", "分析", "组合"]):
+        return [Step(
+            name="Investment Consultation",
+            agent=investment_agent,
+            description="Provide RWA investment analysis and recommendations"
+        )]
+    
     # Default: Guide user
     else:
         return [Step(
@@ -129,11 +153,13 @@ def intent_router(step_input: StepInput) -> List[Step]:
                 content="""Welcome to RWA Asset Tokenization Service!
                 
 Please select the service you need:
-1. Asset Verification - Upload asset files for verification
-2. Asset Valuation - Provide asset information for market evaluation
-3. Asset Tokenization - Tokenize assets on-chain and generate tokens
+1. 📄 Asset Verification - Upload asset files for verification
+2. 💰 Asset Valuation - Provide asset information for market evaluation
+3. ⛓️ Asset Tokenization - Tokenize assets on-chain and generate tokens
+4. ⚖️ Compliance Consultation - Get regulatory and compliance guidance
+5. 📈 Investment Consultation - Receive RWA investment analysis and recommendations
 
-Please tell me which step you would like to proceed with.""",
+Please tell me which service you would like to use.""",
                 success=True
             )
         )]
@@ -151,6 +177,8 @@ rwa_workflow = Workflow(
                 Step(name="Asset Verification", agent=asset_verification_agent),
                 Step(name="Asset Valuation", agent=asset_valuation_agent),
                 Step(name="On-chain Notarization", agent=onchain_notarization_agent),
+                Step(name="Compliance Consultation", agent=compliance_agent),
+                Step(name="Investment Consultation", agent=investment_agent),
             ],
             description="Route to corresponding processing flow based on user intent"
         )

@@ -4,3 +4,4 @@ streamlit
 nest_asyncio
 googlesearch-python
 baidusearch-python
+requests

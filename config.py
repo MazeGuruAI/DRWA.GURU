@@ -25,21 +25,21 @@ class Config:
     # Azure OpenAI 配置
     AZURE_OPENAI_API_KEY: Optional[str] = os.getenv("AZURE_OPENAI_API_KEY")
     AZURE_OPENAI_ENDPOINT: Optional[str] = os.getenv("AZURE_OPENAI_ENDPOINT")
-    AZURE_OPENAI_API_VERSION: str = os.getenv("AZURE_OPENAI_API_VERSION")
-    AZURE_OPENAI_DEPLOYMENT: str = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
-    AZURE_OPENAI_MODEL_ID: str = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+    AZURE_OPENAI_API_VERSION: Optional[str] = os.getenv("AZURE_OPENAI_API_VERSION")
+    AZURE_OPENAI_DEPLOYMENT: Optional[str] = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+    AZURE_OPENAI_MODEL_ID: Optional[str] = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
 
     # DeepSeek 配置（腾讯云）
     DEEPSEEK_API_KEY: Optional[str] = os.getenv("DEEPSEEK_API_KEY")
-    DEEPSEEK_API_ENDPOINT: str = os.getenv("DEEPSEEK_API_ENDPOINT", "https://api.lkeap.cloud.tencent.com/v1")
-    DEEPSEEK_DEPLOYMENT_NAME: str = os.getenv("DEEPSEEK_DEPLOYMENT_NAME", "deepseek-v3.1")
-    DEEPSEEK_MODEL_ID: str = os.getenv("DEEPSEEK_DEPLOYMENT_NAME", "deepseek-v3.1")
+    DEEPSEEK_API_ENDPOINT: str = os.getenv("DEEPSEEK_API_ENDPOINT") or "https://api.lkeap.cloud.tencent.com/v1"
+    DEEPSEEK_DEPLOYMENT_NAME: str = os.getenv("DEEPSEEK_DEPLOYMENT_NAME") or "deepseek-v3.1"
+    DEEPSEEK_MODEL_ID: str = os.getenv("DEEPSEEK_DEPLOYMENT_NAME") or "deepseek-v3.1"
 
     # Azure Embedder 配置
     AZURE_EMBEDDER_OPENAI_API_KEY: Optional[str] = os.getenv("AZURE_EMBEDDER_OPENAI_API_KEY")
     AZURE_EMBEDDER_OPENAI_ENDPOINT: Optional[str] = os.getenv("AZURE_EMBEDDER_OPENAI_ENDPOINT")
-    AZURE_EMBEDDER_OPENAI_API_VERSION: str = os.getenv("AZURE_EMBEDDER_OPENAI_API_VERSION", "2024-07-01-preview")
-    AZURE_EMBEDDER_DEPLOYMENT: str = os.getenv("AZURE_EMBEDDER_DEPLOYMENT", "text-embedding-ada-002")
+    AZURE_EMBEDDER_OPENAI_API_VERSION: str = os.getenv("AZURE_EMBEDDER_OPENAI_API_VERSION") or "2024-07-01-preview"
+    AZURE_EMBEDDER_DEPLOYMENT: str = os.getenv("AZURE_EMBEDDER_DEPLOYMENT") or "text-embedding-ada-002"
 
     @classmethod
     def validate_config(cls) -> bool:
@@ -102,7 +102,7 @@ class Config:
             "id": model_id,
             "api_key": cls.AZURE_EMBEDDER_OPENAI_API_KEY,
             "api_version": cls.AZURE_EMBEDDER_OPENAI_API_VERSION,
-            "azure_endpoint": cls.AZURE_EMBEDDER_OPENAI_ENDPOINT,
+            "base_url": cls.AZURE_EMBEDDER_OPENAI_ENDPOINT,
         }
 
 
