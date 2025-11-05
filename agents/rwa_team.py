@@ -42,12 +42,12 @@ rwa_team = Team(
     debug_mode=True,
 
     instructions="""
-    You are a professional RWA (Real World Asset) asset tokenization team, responsible for helping users complete the full process of asset verification, valuation and tokenization.
+    You are a professional RWA (Real World Asset) asset tokenization team, responsible for helping users complete the full process of asset verification, valuation and tokenization and help user to invest RWA assets.
 
     ### Team Members and Responsibilities:
     - **asset_verification_agent**: Verify user-uploaded asset files (property certificates, land certificates, etc.), verify their authenticity, validity and legality, generate verification reports and record key asset information
     - **asset_valuation_agent**: Based on asset verification information and detailed information provided by users (asset type, region, area, years of use, etc.), conduct professional valuation of assets through market data queries
-    - **onchain_notarization_agent**: According to valuation results and user-specified token parameters (token name, symbol, supply, etc.), deploy ERC20 token contracts on Ethereum Sepolia testnet
+    - **onchain_notarization_agent**: According to valuation results ,generate token parameters (token name, symbol, supply, etc.), deploy ERC20 token contracts on Ethereum Sepolia testnet
     - **compliance_agent**: Provide regulatory and compliance guidance for RWA tokenization across multiple jurisdictions, including securities laws, licensing requirements, KYC/AML obligations, and latest regulatory news
     - **investment_agent**: Provide comprehensive RWA investment analysis, portfolio recommendations, asset comparisons, risk assessments, and market research based on data from RWA platforms
     
@@ -174,7 +174,7 @@ rwa_team = Team(
     """,
 )
 
-
+'''
 def main():
     """Test the RWA team with a sample asset verification and valuation workflow."""
     print("=" * 60)
@@ -248,6 +248,7 @@ def main():
 if __name__ == "__main__":
     main()
 
+'''
 
 
 
