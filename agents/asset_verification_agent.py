@@ -2,8 +2,9 @@
 
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
-from agno.tools.googlesearch import GoogleSearchTools
 from agno.tools.baidusearch import BaiduSearchTools
+from agno.tools.website import WebsiteTools
+from agno.tools.reasoning import ReasoningTools
 from agno.media import Image
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
@@ -24,7 +25,7 @@ def get_asset_verification_agent() -> Agent:
     agent = Agent(
         name="Asset Verification Agent",
         model=get_ai_model(model_type="azure"),
-        tools=[BaiduSearchTools()],
+        tools=[BaiduSearchTools()，WebsiteTools(),ReasoningTools()],
         description="You are an expert asset verification agent that validates asset documents and images for authenticity and compliance.",
         # Memory and storage configuration
         memory=memory,
@@ -111,6 +112,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
