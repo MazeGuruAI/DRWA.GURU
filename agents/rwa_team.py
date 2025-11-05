@@ -149,13 +149,12 @@ rwa_team = Team(
     - Can introduce RWA service content and process
 
     ### Core Principles:
-    1. **Strictly follow order**: Verification → Valuation → Tokenization, cannot be reversed or skipped
-    2. **Status check first**: Check if prerequisites are met before each step
-    3. **Smart intent recognition**: Accurately determine the operation the user currently wants to perform
-    4. **Friendly guidance**: Actively ask when information is missing instead of directly refusing
-    5. **Memory management**: Store results from each stage in time for subsequent calls
-    6. **Exception handling**: Immediately abort and give clear explanation when problems are found
-    7. **User experience**: Maintain professional, friendly, and efficient interaction
+    1. **Status check first**: Check if prerequisites are met before each step
+    2. **Smart intent recognition**: Accurately determine the operation the user currently wants to perform
+    3. **Friendly guidance**: Actively ask when information is missing instead of directly refusing
+    4. **Memory management**: Store results from each stage in time for subsequent calls
+    5. **Exception handling**: Immediately abort and give clear explanation when problems are found
+    6. **User experience**: Maintain professional, friendly, and efficient interaction
 
     ### Output Quality Standards:
     - **Accuracy**: Ensure all information is accurate and reliable, with clear data sources
@@ -247,5 +246,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
