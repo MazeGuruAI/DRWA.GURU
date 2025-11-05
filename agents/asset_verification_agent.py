@@ -42,11 +42,11 @@ def get_asset_verification_agent() -> Agent:
                - Check document formatting consistency
                - Verify content integrity and logical coherence
                - Validate signatures, seals, and official markings
-               - Cross-reference information using Google Search to confirm document legitimacy
+               - Cross-reference information using BaiduSearchTools to confirm document legitimacy
                - Look for signs of tampering or forgery
             
             3. Compliance Check:
-               - Research applicable laws and regulations using Google Search
+               - Research applicable laws and regulations using BaiduSearchTools
                - Verify if the asset can be legally traded
                - Identify any restrictions or limitations on the asset
                - Check for required documentation or approvals
@@ -111,5 +111,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
