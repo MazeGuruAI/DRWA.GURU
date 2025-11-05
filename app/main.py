@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import streamlit as st
 import nest_asyncio
 import asyncio
-from agents.rwa_workflow import rwa_workflow, arun_rwa_workflow
+from agents.rwa_team import rwa_team
 from app.utils import display_messages, add_message, clear_chat_history, process_uploaded_files, create_agno_images_from_bytes
 
 # Apply nest_asyncio to allow nested event loops
@@ -90,12 +90,12 @@ def main():
         welcome_message = """
         👋 Welcome to the RWA Asset Tokenization Platform!
         
-I am a professional RWA workflow system that can help you:
-        - 🔍 **Asset Verification** - Verify the authenticity and legality of asset files
-        - 💰 **Asset Valuation** - Conduct professional asset value evaluation
-        - ⛓️ **Asset Tokenization** - Issue asset tokens on the blockchain
-        - ⚖️ **Compliance Consultation** - Get global RWA regulatory and compliance guidance
-        - 📈 **Investment Consultation** - Receive RWA investment analysis and portfolio recommendations
+I am a professional RWA team system with 5 expert agents ready to help you:
+        - 🔍 **Asset Verification Agent** - Verify the authenticity and legality of asset files
+        - 💰 **Asset Valuation Agent** - Conduct professional asset value evaluation
+        - ⛓️ **Blockchain Notarization Agent** - Issue asset tokens on the blockchain
+        - ⚖️ **Compliance Agent** - Provide global RWA regulatory and compliance guidance
+        - 📈 **Investment Agent** - Deliver RWA investment analysis and portfolio recommendations
         
         **How to Use:**
         
@@ -103,7 +103,7 @@ I am a professional RWA workflow system that can help you:
         1. Upload your asset proof documents (such as property certificates, land certificates, etc.)
         2. Provide detailed asset information (type, location, area, age, etc.)
         3. Set token parameters (name, symbol, supply, etc.)
-        4. The system will automatically complete the entire tokenization process
+        4. Our team will automatically route your request to the appropriate agents
         
         **For Compliance Consultation:**
         - Ask about regulations in specific jurisdictions (e.g., "What are SEC requirements for tokenizing real estate?")
@@ -146,30 +146,22 @@ I am a professional RWA workflow system that can help you:
         # Add user message to chat history
         add_message("user", prompt)
         
-        # Generate workflow response (asynchronous execution)
+        # Generate RWA team response
         with st.chat_message("assistant"):
-            with st.spinner("RWA workflow is processing your request..."):
+            with st.spinner("RWA Team is processing your request..."):
                 try:
-                    # Prepare additional_data
-                    additional_data = {
-                        "has_files": "uploaded_files_data" in st.session_state and bool(st.session_state.uploaded_files_data),
-                        "files_count": len(st.session_state.uploaded_files_data) if "uploaded_files_data" in st.session_state and st.session_state.uploaded_files_data else 0
-                    }
-                    
-                    # Run asynchronous workflow using asyncio
+                    # Run RWA team
                     if agno_images:
                         # If there are images, pass both message and images
-                        response = asyncio.run(arun_rwa_workflow(
+                        response = rwa_team.run(
                             message=complete_message,
-                            images=agno_images,
-                            additional_data=additional_data
-                        ))
+                            images=agno_images
+                        )
                     else:
                         # Text message only
-                        response = asyncio.run(arun_rwa_workflow(
-                            message=complete_message,
-                            additional_data=additional_data
-                        ))
+                        response = rwa_team.run(
+                            message=complete_message
+                        )
                     
                     # Process response
                     if hasattr(response, 'content'):
@@ -180,21 +172,17 @@ I am a professional RWA workflow system that can help you:
                     # Display response
                     st.markdown(response_content)
                     
-                    # Add workflow response to chat history
+                    # Add team response to chat history
                     add_message("assistant", response_content)
                     
-                    # Display workflow execution status (if available)
-                    if hasattr(response, 'workflow_metrics') and response.workflow_metrics:
-                        with st.expander("📊 Workflow Execution Details", expanded=False):
-                            try:
-                                metrics = response.workflow_metrics
-                                if hasattr(metrics, 'total_steps'):
-                                    st.success(f"✅ Workflow execution completed, executed {metrics.total_steps} step(s)")
-                                else:
-                                    st.info("✅ Workflow execution completed")
-                                
-                            except Exception as e:
-                                st.info(f"Workflow execution completed (failed to get details: {e})")
+                    # Display team member responses if available
+                    if hasattr(response, 'messages') and response.messages:
+                        with st.expander("📊 Agent Responses", expanded=False):
+                            for msg in response.messages:
+                                if hasattr(msg, 'role') and hasattr(msg, 'content'):
+                                    if msg.role == 'assistant':
+                                        st.markdown(f"**Agent Response:**\n{msg.content}")
+                                        st.markdown("---")
                     
                 except Exception as e:
                     error_message = f"❌ Error occurred while processing request: {str(e)}"
