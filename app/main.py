@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import streamlit as st
 import nest_asyncio
 import asyncio
-from agents.rwa_team import get_rwa_team
+from agents.rwa_team import rwa_team
 from app.utils import display_messages, add_message, clear_chat_history, process_uploaded_files, create_agno_images_from_bytes
 
 # Apply nest_asyncio to allow nested event loops
@@ -161,7 +161,6 @@ I am a professional RWA team system with 5 expert agents ready to help you:
             with st.spinner("RWA Team is processing your request..."):
                 try:
                     # Run RWA team
-                    rwa_team = get_rwa_team()
                     
                     if agno_images:
                         # If there are images, pass both message and images
@@ -222,4 +221,5 @@ I am a professional RWA team system with 5 expert agents ready to help you:
 
 if __name__ == "__main__":
     main()
+
 
