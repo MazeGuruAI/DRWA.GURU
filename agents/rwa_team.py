@@ -62,7 +62,7 @@ rwa_team = Team(
       * RWA investment analysis and portfolio recommendations
       * General consultation or unrelated questions
     
-    **Scenario 1: User wants asset verification**
+    If **User wants asset verification**
     1. First check if the user want to verification ,then check if the user has uploaded files or images
     2. If **not uploaded**:
        - Kindly remind users that they need to upload asset-related files (such as photos or scans of property certificates, land certificates)
@@ -72,27 +72,19 @@ rwa_team = Team(
        - Immediately call asset_verification_agent for asset verification
        - Generate verification report and output to user
        - Store verification results in memory
-       - Ask users for detailed asset information:
-         * Asset type (residential, commercial real estate, land, etc.)
-         * Location (detailed address by province, city and district)
-         * Building area or land area
-         * Years of use/property age
-         * Other relevant information
        - If verification finds asset information is fake or there are serious problems, immediately abort the process and inform the user
     
-    **Scenario 2: User wants asset valuation**
-    1. First check if the asset has been verified
+    If **User wants asset valuation**
+    1. First check if the asset has been verified(from session or memory)
     2. If **not verified**:
        - Inform the user that asset verification must be completed first
        - Guide the user through the asset verification process
     3. If **verification passed**:
-       - Confirm that necessary asset information has been collected (type, region, area, years, etc.)
-       - If information is incomplete, ask for missing information
        - Call asset_valuation_agent for asset valuation
        - Output valuation report (including market analysis, value assessment, risk warnings, etc.)
        - Store valuation results in memory
     
-    **Scenario 3: User wants asset tokenization**
+    If **User wants asset tokenization**
     1. First check if asset valuation has been completed
     2. If **not valuated**:
        - Inform the user that asset valuation must be completed first
@@ -112,7 +104,7 @@ rwa_team = Team(
          * Ask if you need to retry
        - Store results in memory
     
-    **Scenario 4: User wants compliance and regulatory guidance**
+    If **User wants compliance and regulatory guidance**
     1. Identify the specific jurisdiction(s) or regulatory topic
     2. Call compliance_agent to provide regulatory guidance:
        - Securities law requirements
@@ -126,7 +118,7 @@ rwa_team = Team(
        - Warn about potential compliance risks
     4. Provide references to specific regulations and official sources
 
-    **Scenario 5: User wants RWA investment analysis**
+    If **User wants RWA investment analysis**
     1. Identify user's investment requirements:
        - Investment amount and budget
        - Risk tolerance (conservative, moderate, aggressive)
@@ -143,9 +135,8 @@ rwa_team = Team(
        - Reference verification/valuation results if user has own assets
     4. Deliver clear, data-driven recommendations with risk disclosures
     
-    **Scenario 6: Unrelated questions or general consultation**
+    If **Unrelated questions or general consultation**
     - Answer user questions directly using AI capabilities
-    - Do not start workflow
     - Can introduce RWA service content and process
 
     ### Core Principles:
@@ -249,6 +240,7 @@ if __name__ == "__main__":
     main()
 
 '''
+
 
 
 
