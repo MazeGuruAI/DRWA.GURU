@@ -1,5 +1,6 @@
 """Main Agno Agent for the Streamlit Application"""
 
+import asyncio
 from agno.agent import Agent
 from agno.team import Team
 from config import get_ai_model
@@ -18,28 +19,42 @@ memory_db = SqliteMemoryDb(table_name="rwa_team_memory", db_file="storage/rwa_me
 memory = Memory(db=memory_db)
 sessions = SqliteStorage(table_name="rwa_team_sessions", db_file="storage/rwa_sessions.db")
 
+# Initialize agents (onchain_notarization_agent is async, will be initialized later)
 asset_valuation_agent = get_asset_valuation_agent()
 asset_verification_agent = get_asset_verification_agent()
-onchain_notarization_agent = get_onchain_notarization_agent()
 compliance_agent = get_rwa_compliance_agent()
 investment_agent = get_rwa_investment_agent()
 
-rwa_team = Team(
-    name="RWA Team",
-    members=[asset_valuation_agent, asset_verification_agent, onchain_notarization_agent, compliance_agent,investment_agent],
-    model=get_ai_model(model_type="azure"),
-    mode="route",
-    tools=[ReasoningTools()],
+# Placeholder for onchain_notarization_agent (will be set asynchronously)
+onchain_notarization_agent = None
 
-    # ==================== 团队协作配置 ====================
-    show_members_responses=True,  # 显示成员响应
+# RWA team will be initialized after async agent is ready
+rwa_team = None
+
+async def initialize_rwa_team():
+    """Initialize RWA team with async onchain_notarization_agent"""
+    global rwa_team, onchain_notarization_agent
     
-    # ==================== 会话管理 ====================
-    memory=memory,
-    storage=sessions,
+    # Initialize async agent
+    onchain_notarization_agent = await get_onchain_notarization_agent()
     
-    # ==================== 调试和监控 ====================
-    debug_mode=True,
+    # Create team with all agents
+    rwa_team = Team(
+        name="RWA Team",
+        members=[asset_valuation_agent, asset_verification_agent, onchain_notarization_agent, compliance_agent, investment_agent],
+        model=get_ai_model(model_type="azure"),
+        mode="route",
+        tools=[ReasoningTools()],
+
+        # ==================== 团队协作配置 ====================
+        show_members_responses=True,  # 显示成员响应
+        
+        # ==================== 会话管理 ====================
+        memory=memory,
+        storage=sessions,
+        
+        # ==================== 调试和监控 ====================
+        debug_mode=True,
 
     instructions="""
     You are a professional RWA (Real World Asset) asset tokenization team, responsible for helping users complete the full process of asset verification, valuation and tokenization and help user to invest RWA assets.
@@ -153,7 +168,31 @@ rwa_team = Team(
     - Regularly confirm whether the user understands and needs further explanation
     
     """,
-)
+    )
+    
+    return rwa_team
+
+def get_rwa_team():
+    """Get or initialize RWA team (handles async initialization)"""
+    global rwa_team
+    
+    if rwa_team is None:
+        # Run async initialization in event loop
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        
+        if loop.is_running():
+            # If loop is already running, create a task
+            import nest_asyncio
+            nest_asyncio.apply()
+            rwa_team = loop.run_until_complete(initialize_rwa_team())
+        else:
+            rwa_team = loop.run_until_complete(initialize_rwa_team())
+    
+    return rwa_team
 
 '''
 def main():
