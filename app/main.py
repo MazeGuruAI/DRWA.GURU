@@ -31,6 +31,10 @@ def main():
     
     st.markdown("Professional RWA Asset Verification, Valuation, Tokenization, Compliance and Investment Service Platform")
     
+    # Initialize file uploader key if not exists
+    if "file_uploader_key" not in st.session_state:
+        st.session_state.file_uploader_key = 0
+    
     # Sidebar
     with st.sidebar:
         st.header("⚙️ System Settings")
@@ -40,23 +44,28 @@ def main():
             clear_chat_history()
             if "uploaded_files_data" in st.session_state:
                 del st.session_state.uploaded_files_data
+            # Increment key to reset file uploader
+            st.session_state.file_uploader_key += 1
             st.rerun()
         
         # File clear button
         if "uploaded_files_data" in st.session_state and st.session_state.uploaded_files_data:
             if st.button("📁 Clear Uploaded Files", use_container_width=True, type="secondary"):
                 del st.session_state.uploaded_files_data
+                # Increment key to reset file uploader
+                st.session_state.file_uploader_key += 1
                 st.rerun()
         
         st.markdown("---")
         st.markdown("### 📁 File Upload")
         
-        # File uploader for asset verification
+        # File uploader for asset verification with dynamic key
         uploaded_files = st.file_uploader(
             "Upload Asset-related Files",
             type=["pdf", "jpg", "jpeg", "png", "doc", "docx"],
             accept_multiple_files=True,
-            help="Supports uploading property certificates, land certificates and other asset proof documents"
+            help="Supports uploading property certificates, land certificates and other asset proof documents",
+            key=f"file_uploader_{st.session_state.file_uploader_key}"
         )
         
         # Process and store uploaded files
@@ -190,6 +199,8 @@ I am a professional RWA team system with 5 expert agents ready to help you:
                         del st.session_state.uploaded_files_data
                         # Clear agno_images to prevent reuse
                         agno_images.clear()
+                        # Increment key to reset file uploader
+                        st.session_state.file_uploader_key += 1
                         st.rerun()
                     
                 except Exception as e:
@@ -202,6 +213,8 @@ I am a professional RWA team system with 5 expert agents ready to help you:
                         del st.session_state.uploaded_files_data
                         # Clear agno_images to prevent reuse
                         agno_images.clear()
+                        # Increment key to reset file uploader
+                        st.session_state.file_uploader_key += 1
                         st.rerun()
 
 
