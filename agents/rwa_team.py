@@ -7,6 +7,7 @@ from agents.asset_verification_agent import get_asset_verification_agent
 from agents.asset_valuation_agent import get_asset_valuation_agent
 from agents.onchain_notarization_agent import get_onchain_notarization_agent
 from agents.rwa_compliance_agent import get_rwa_compliance_agent
+from agents.rwa_investment_agent import get_rwa_investment_agent
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
 from agno.storage.sqlite import SqliteStorage
@@ -21,10 +22,11 @@ asset_valuation_agent = get_asset_valuation_agent()
 asset_verification_agent = get_asset_verification_agent()
 onchain_notarization_agent = get_onchain_notarization_agent()
 compliance_agent = get_rwa_compliance_agent()
+investment_agent = get_rwa_investment_agent()
 
 rwa_team = Team(
     name="RWA Team",
-    members=[asset_valuation_agent, asset_verification_agent, onchain_notarization_agent, compliance_agent],
+    members=[asset_valuation_agent, asset_verification_agent, onchain_notarization_agent, compliance_agent,investment_agent],
     model=get_ai_model(model_type="azure"),
     mode="route",
     tools=[ReasoningTools()],
@@ -47,6 +49,7 @@ rwa_team = Team(
     - **asset_valuation_agent**: Based on asset verification information and detailed information provided by users (asset type, region, area, years of use, etc.), conduct professional valuation of assets through market data queries
     - **onchain_notarization_agent**: According to valuation results and user-specified token parameters (token name, symbol, supply, etc.), deploy ERC20 token contracts on Ethereum Sepolia testnet
     - **compliance_agent**: Provide regulatory and compliance guidance for RWA tokenization across multiple jurisdictions, including securities laws, licensing requirements, KYC/AML obligations, and latest regulatory news
+    - **investment_agent**: Provide comprehensive RWA investment analysis, portfolio recommendations, asset comparisons, risk assessments, and market research based on data from RWA platforms
     
     ### Core Workflow - Smart Routing Based on User Intent:
     
@@ -56,6 +59,7 @@ rwa_team = Team(
       * Asset valuation
       * Asset tokenization (Token)
       * Compliance and regulatory consultation
+      * RWA investment analysis and portfolio recommendations
       * General consultation or unrelated questions
     
     **Scenario 1: User wants asset verification**
@@ -87,12 +91,6 @@ rwa_team = Team(
        - Call asset_valuation_agent for asset valuation
        - Output valuation report (including market analysis, value assessment, risk warnings, etc.)
        - Store valuation results in memory
-       - Ask users for tokenization-related information:
-         * Token Name
-         * Token Symbol
-         * Total Supply
-         * Decimals (default 18)
-         * Other token parameters
     
     **Scenario 3: User wants asset tokenization**
     1. First check if asset valuation has been completed
@@ -100,9 +98,7 @@ rwa_team = Team(
        - Inform the user that asset valuation must be completed first
        - Guide the user through verification and valuation process in order
     3. If **valuation completed**:
-       - Confirm that token information has been collected (name, symbol, supply, etc.)
-       - If information is incomplete, ask for missing information
-       - Based on valuation report and user input, generate complete Token metadata
+       - Retrieve user specified token information, if not specified, generate complete Token metadata(name, symbol, supply, etc.) based on valuation report 
        - Call onchain_notarization_agent to deploy ERC20 contract on Ethereum Sepolia testnet
        - If deployment succeeds:
          * Return contract address
@@ -114,6 +110,7 @@ rwa_team = Team(
          * Explain the reason for failure in detail
          * Provide possible solutions
          * Ask if you need to retry
+       - Store results in memory
     
     **Scenario 4: User wants compliance and regulatory guidance**
     1. Identify the specific jurisdiction(s) or regulatory topic
@@ -128,8 +125,25 @@ rwa_team = Team(
        - Ensure tokenization plan meets regulatory requirements
        - Warn about potential compliance risks
     4. Provide references to specific regulations and official sources
+
+    **Scenario 5: User wants RWA investment analysis**
+    1. Identify user's investment requirements:
+       - Investment amount and budget
+       - Risk tolerance (conservative, moderate, aggressive)
+       - Investment horizon and liquidity needs
+       - Preferred asset types or sectors
+    2. Call investment_agent to provide analysis:
+       - Collect latest RWA market data from platforms like https://app.rwa.xyz/
+       - Classify and compare available RWA assets
+       - Analyze historical performance and risk metrics
+       - Generate customized portfolio recommendations
+       - Provide comprehensive investment report with actionable insights
+    3. Integrate with other agents if needed:
+       - Coordinate with compliance_agent for regulatory considerations
+       - Reference verification/valuation results if user has own assets
+    4. Deliver clear, data-driven recommendations with risk disclosures
     
-    **Scenario 5: Unrelated questions or general consultation**
+    **Scenario 6: Unrelated questions or general consultation**
     - Answer user questions directly using AI capabilities
     - Do not start workflow
     - Can introduce RWA service content and process
@@ -233,4 +247,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
