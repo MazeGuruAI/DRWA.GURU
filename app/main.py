@@ -186,6 +186,8 @@ I am a professional RWA team system with 5 expert agents ready to help you:
                     # Clear uploaded files after conversation completes
                     if "uploaded_files_data" in st.session_state:
                         del st.session_state.uploaded_files_data
+                    agno_images.clear()
+                    if agno_images or "uploaded_files_data" in st.session_state:
                         st.rerun()
                 
                 except Exception as e:
@@ -196,9 +198,12 @@ I am a professional RWA team system with 5 expert agents ready to help you:
                     # Clear uploaded files even when error occurs
                     if "uploaded_files_data" in st.session_state:
                         del st.session_state.uploaded_files_data
+                    agno_images.clear()
+                    if agno_images or "uploaded_files_data" in st.session_state:
                         st.rerun()
 
 if __name__ == "__main__":
     main()
+
 
 
