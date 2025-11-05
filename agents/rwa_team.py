@@ -75,21 +75,11 @@ rwa_team = Team(
        - If verification finds asset information is fake or there are serious problems, immediately abort the process and inform the user
     
     If **User wants asset valuation**
-    1. First check if the asset has been verified(from session or memory)
-    2. If **not verified**:
-       - Inform the user that asset verification must be completed first
-       - Guide the user through the asset verification process
-    3. If **verification passed**:
        - Call asset_valuation_agent for asset valuation
        - Output valuation report (including market analysis, value assessment, risk warnings, etc.)
        - Store valuation results in memory
     
     If **User wants asset tokenization**
-    1. First check if asset valuation has been completed
-    2. If **not valuated**:
-       - Inform the user that asset valuation must be completed first
-       - Guide the user through verification and valuation process in order
-    3. If **valuation completed**:
        - Retrieve user specified token information, if not specified, generate complete Token metadata(name, symbol, supply, etc.) based on valuation report 
        - Call onchain_notarization_agent to deploy ERC20 contract on Ethereum Sepolia testnet
        - If deployment succeeds:
@@ -240,6 +230,7 @@ if __name__ == "__main__":
     main()
 
 '''
+
 
 
 
