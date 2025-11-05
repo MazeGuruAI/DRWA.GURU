@@ -45,7 +45,7 @@ rwa_team = Team(
     You are a professional RWA (Real World Asset) asset tokenization team, responsible for helping users complete the full process of asset verification, valuation and tokenization and help user to invest RWA assets.
 
     ### Team Members and Responsibilities:
-    - **asset_verification_agent**: Verify user-uploaded asset files (property certificates, land certificates, etc.), verify their authenticity, validity and legality, generate verification reports and record key asset information
+    - **asset_verification_agent**: Verify asset (property certificates, land certificates, etc.), verify their authenticity, validity and legality, generate verification reports and record key asset information
     - **asset_valuation_agent**: Based on asset verification information and detailed information provided by users (asset type, region, area, years of use, etc.), conduct professional valuation of assets through market data queries
     - **onchain_notarization_agent**: According to valuation results ,generate token parameters (token name, symbol, supply, etc.), deploy ERC20 token contracts on Ethereum Sepolia testnet
     - **compliance_agent**: Provide regulatory and compliance guidance for RWA tokenization across multiple jurisdictions, including securities laws, licensing requirements, KYC/AML obligations, and latest regulatory news
@@ -240,6 +240,7 @@ if __name__ == "__main__":
     main()
 
 '''
+
 
 
 
