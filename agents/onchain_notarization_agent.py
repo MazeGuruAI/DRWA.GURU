@@ -31,7 +31,7 @@ warnings.filterwarnings('ignore', message='.*async.*generator.*')
 ETHEREUM_MCP_COMMAND = "python tools/web3_mcp_server.py"
 ETHEREUM_FASTMCP_URL = "http://127.0.0.1:8000/mcp"
 
-
+'''
 async def run_agent(message: str) -> None:
     """Run Web3 Agent and process user queries"""
     mcp_tools = None
@@ -62,7 +62,7 @@ async def run_agent(message: str) -> None:
         else:
             print(f"❌ Execution failed: {e}", file=sys.stderr)
             raise
-'''
+
 async def run_agent(message: str) -> None:
     """Run Web3 Agent and process user queries"""
     try:
@@ -83,16 +83,15 @@ async def run_agent(message: str) -> None:
 
 '''
 
-def get_onchain_notarization_agent(
-    mcp_tools: MCPTools = None,
-) -> Agent:
+def get_onchain_notarization_agent() -> Agent:
     """Create on-chain notarization Agent instance"""
     # Initialize shared memory and storage (consistent with RWA team)
-    # memory_db = SqliteMemoryDb(table_name="rwa_memory", db_file="storage/rwa_memory.db")
-    # memory = Memory(db=memory_db)
-    # storage = SqliteStorage(table_name="rwa_sessions", db_file="storage/rwa_storage.db")
+    memory_db = SqliteMemoryDb(table_name="rwa_memory", db_file="storage/rwa_memory.db")
+    memory = Memory(db=memory_db)
+    storage = SqliteStorage(table_name="rwa_sessions", db_file="storage/rwa_storage.db")
+    
     # Use passed MCP tools or create new ones
-    ethereum_mcp_tool = mcp_tools or MCPTools(command=ETHEREUM_MCP_COMMAND)
+    ethereum_mcp_tool = MCPTools(command=ETHEREUM_MCP_COMMAND)
 
     return Agent(
         name="Onchain Notarization Agent",
@@ -185,6 +184,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
