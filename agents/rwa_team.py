@@ -54,7 +54,7 @@ rwa_team = Team(
     ### Core Workflow - Smart Routing Based on User Intent:
     
     **Step 1: Identify User Intent**
-    - Carefully analyze user requests to determine the operation the user wants to perform:
+    - call ReasoningTools to carefully analyze user requests to determine the operation the user wants to perform:
       * Asset verification
       * Asset valuation
       * Asset tokenization (Token)
@@ -240,6 +240,7 @@ if __name__ == "__main__":
     main()
 
 '''
+
 
 
 
