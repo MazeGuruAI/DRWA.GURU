@@ -95,6 +95,7 @@ def get_onchain_notarization_agent(
     ethereum_mcp_tool = mcp_tools or MCPTools(command=ETHEREUM_MCP_COMMAND)
 
     return Agent(
+        name="Onchain Notarization Agent",
         model=get_ai_model(model_type="azure"),
         tools=[ethereum_mcp_tool],
 
@@ -184,5 +185,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
