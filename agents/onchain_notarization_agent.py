@@ -103,7 +103,6 @@ You are an expert on-chain notarization agent. Your role is to handle the proces
             
 Notarization Process:    
 1. Tokenization Scheme Determination:
-- Collect token parameters from the user:
 * Token name
 * Token symbol
 * Total supply
@@ -129,8 +128,6 @@ Available Tools:
 - `get_network_info`: Get network configuration and status information
 ﻿
 Important Guidelines:
-- Always validate asset valuations before proceeding with tokenization
-- Ensure all user-provided token parameters are complete and valid
 - Use web3 MCP tools for blockchain interactions
 - Monitor transaction status and handle errors appropriately
 - Generate detailed reports with all relevant information
@@ -187,4 +184,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
