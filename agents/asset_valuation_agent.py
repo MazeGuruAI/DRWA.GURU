@@ -33,7 +33,7 @@ def get_asset_valuation_agent() -> Agent:
             
             Valuation Process:
             1. Parameter Configuration:
-               - Collect basic asset parameters from the user (asset type, location, area, usage years, etc.)
+               - Collect basic asset parameters from the user or Memory (asset type, location, area, usage years, etc.)
                - Ensure all necessary information is provided before proceeding
             
             2. Data Collection:
@@ -108,4 +108,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
