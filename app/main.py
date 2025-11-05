@@ -183,12 +183,19 @@ I am a professional RWA team system with 5 expert agents ready to help you:
                                     if msg.role == 'assistant':
                                         st.markdown(f"**Agent Response:**\n{msg.content}")
                                         st.markdown("---")
-                    
+                    # Clear uploaded files after conversation completes
+                    if "uploaded_files_data" in st.session_state:
+                        del st.session_state.uploaded_files_data
+                
                 except Exception as e:
                     error_message = f"❌ Error occurred while processing request: {str(e)}"
                     st.error(error_message)
                     add_message("assistant", error_message)
 
+                    # Clear uploaded files even when error occurs
+                    if "uploaded_files_data" in st.session_state:
+                        del st.session_state.uploaded_files_data
 
 if __name__ == "__main__":
     main()
+
