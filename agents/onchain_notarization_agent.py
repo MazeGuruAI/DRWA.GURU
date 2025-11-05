@@ -83,7 +83,7 @@ async def run_agent(message: str) -> None:
 
 '''
 
-def get_onchain_notarization_agent() -> Agent:
+async def get_onchain_notarization_agent() -> Agent:
     """Create on-chain notarization Agent instance"""
     # Initialize shared memory and storage (consistent with RWA team)
     memory_db = SqliteMemoryDb(table_name="rwa_memory", db_file="storage/rwa_memory.db")
@@ -92,6 +92,7 @@ def get_onchain_notarization_agent() -> Agent:
     
     # Use passed MCP tools or create new ones
     ethereum_mcp_tool = MCPTools(command=ETHEREUM_MCP_COMMAND)
+    await ethereum_mcp_tool.connect()
 
     return Agent(
         name="Onchain Notarization Agent",
@@ -184,6 +185,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
