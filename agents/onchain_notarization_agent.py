@@ -91,7 +91,10 @@ def get_onchain_notarization_agent() -> Agent:
     storage = SqliteStorage(table_name="rwa_sessions", db_file="storage/rwa_storage.db")
     
     # Use passed MCP tools or create new ones
-    ethereum_mcp_tool = MCPTools(command=ETHEREUM_MCP_COMMAND)
+    ethereum_mcp_tool = MCPTools(
+        command=ETHEREUM_MCP_COMMAND,
+        timeout_seconds=60  # Increase timeout for server startup
+    )
 
     return Agent(
         name="Onchain Notarization Agent",
@@ -186,6 +189,7 @@ if __name__ == "__main__":
     main()
 
 '''
+
 
 
 
